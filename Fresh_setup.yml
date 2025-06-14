@@ -1,0 +1,57 @@
+---
+- name: Set up and schedule weekly updates on Ubuntu
+  hosts: all
+  become: yes
+
+  pre_tasks:
+    - name: Check if the setup has already been completed
+      stat:
+        path: /etc/system_prep_complete
+      register: prep_marker
+
+    - name: Skip host if setup is already completed
+      meta: end_play
+      when: prep_marker.stat.exists
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+        autoremove: yes
+
+    - name: Install common utilities
+      apt:
+        name:
+          - fail2ban
+          - nano
+          - cron
+        state: present
+
+    - name: Ensure cron service is running
+      service:
+        name: cron
+        state: started
+        enabled: yes
+
+    - name: Add weekly apt update/upgrade cron job
+      cron:
+        name: "Weekly system update"
+        user: root
+        minute: "0"
+        hour: "1"
+        weekday: "0"
+        job: "apt update && apt upgrade -y >> /var/log/weekly-updates.log 2>&1"
+
+    - name: Create marker file to indicate setup is complete
+      file:
+        path: /etc/system_prep_complete
+        state: touch
+
+    - name: Echo success message
+      debug:
+        msg: "System prepared and cron job scheduled successfully!"
