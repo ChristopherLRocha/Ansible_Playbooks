@@ -1,6 +1,6 @@
 ---
 - name: Gravity Update for PiHole
-  host: pihole VMs
+  hosts: pihole VMs
   become: yes
 
   tasks:
@@ -10,4 +10,4 @@
         user: root
         minute: "0"
         hour: "0"
-        job: /usr/local/bin/pihole updateGravity > /dev/null
+        job: "/usr/local/bin/pihole updateGravity > /dev/null"
