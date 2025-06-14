@@ -4,3 +4,7 @@
   tasks:
     - name: Ping target hosts
       ping:
+
+    - name: Echo Hello World
+      debug:
+        msg: "Hello world!"
