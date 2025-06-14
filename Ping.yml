@@ -1,9 +1,6 @@
-- name: Ping test
-  hosts: Linux servers
+- name: Simple Ping Test
+  hosts: all
+  gather_facts: no
   tasks:
-   - name: Ping my hosts
-     ansible.builtin.ping:
-
-   - name: Print message
-     ansible.builtin.debug:
-       msg: Hello world
+    - name: Ping target hosts
+      ping:
