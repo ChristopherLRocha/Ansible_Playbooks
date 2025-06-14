@@ -67,8 +67,13 @@
         weekday: "0"
         job: "clamscan -r / --quiet --log=/var/log/clamav/weekly_scan.log"
 
-    - name: Run freshclam to update AV definitions
-      command: freshclam
+    - name: Schedule weekly ClamAV definition update
+      cron:
+        name: "Weekly ClamAV definition update"
+        minute: "0"
+        hour: "3"
+        weekday: "0"
+        job: "systemctl stop clamav-freshclam && freshclam && systemctl start clamav-freshclam && systemctl enable clamd@scan && systemctl start clamd@scan"
 
     - name: Create marker file to indicate setup is complete
       file:
