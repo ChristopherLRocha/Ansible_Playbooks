@@ -30,6 +30,9 @@
           - fail2ban
           - nano
           - cron
+          - clamav
+          - clamav-daemon
+          - clamav-freshclam
         state: present
 
     - name: Ensure cron service is running
@@ -37,6 +40,14 @@
         name: cron
         state: started
         enabled: yes
+
+    - name: Ensure ClamAV log directory exists
+      file:
+        path: /var/log/clamav
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
 
     - name: Add weekly apt update/upgrade cron job
       cron:
@@ -46,6 +57,18 @@
         hour: "1"
         weekday: "0"
         job: "apt update && apt upgrade -y >> /var/log/weekly-updates.log 2>&1"
+
+    - name: Schedule weekly ClamAV scan
+      cron:
+        name: "Weekly ClamAV scan"
+        user: root
+        minute: "0"
+        hour: "5"
+        weekday: "0"
+        job: "clamscan -r / --quiet --log=/var/log/clamav/weekly_scan.log"
+
+    - name: Run freshclam to update AV definitions
+      command: freshclam
 
     - name: Create marker file to indicate setup is complete
       file:
