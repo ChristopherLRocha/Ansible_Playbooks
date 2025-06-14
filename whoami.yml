@@ -1,6 +1,8 @@
-- name: Test become
-  hosts: all
+- hosts: all
   become: yes
   tasks:
-    - name: Run whoami
-      command: whoami
+    - command: whoami
+      register: result
+
+    - debug:
+        var: result.stdout
