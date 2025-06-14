@@ -1,0 +1,48 @@
+---
+- name: Set up Nginx web server on Ubuntu
+  hosts: webservers
+  become: yes
+
+  pre_tasks:
+    - name: Check if Nginx is already configured
+      stat:
+        path: /etc/nginx_configured
+      register: nginx_marker
+
+    - name: Skip play if already configured
+      meta: end_play
+      when: nginx_marker.stat.exists
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Ensure Nginx is running and enabled
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Create custom index.html
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <head><title>Welcome</title></head>
+          <body><h1>Nginx is installed and working!</h1></body>
+          </html>
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+    - name: Create marker file to indicate setup is complete
+      file:
+        path: /etc/nginx_configured
+        state: touch
