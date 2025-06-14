@@ -1,6 +1,6 @@
 ---
 - name: Gravity Update for PiHole
-  host: PiHole
+  host: pihole VMs
   become: yes
 
   tasks:
