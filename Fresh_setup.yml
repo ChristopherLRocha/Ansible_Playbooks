@@ -56,7 +56,7 @@
         minute: "0"
         hour: "1"
         weekday: "0"
-        job: "apt update && apt upgrade -y >> /var/log/weekly-updates.log 2>&1"
+        job: "apt update && apt upgrade -y && sudo apt autoremove >> /var/log/weekly-updates.log 2>&1"
 
     - name: Schedule weekly ClamAV scan
       cron:
