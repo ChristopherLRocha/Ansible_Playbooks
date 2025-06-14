@@ -1,0 +1,6 @@
+- name: Test become
+  hosts: all
+  become: yes
+  tasks:
+    - name: Run whoami
+      command: whoami
