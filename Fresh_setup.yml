@@ -1,5 +1,5 @@
 ---
-- name: Set up and schedule weekly updates on Ubuntu
+- name: Set up fresh Ubuntu
   hosts: all
   become: yes
 
