@@ -29,4 +29,14 @@
         line: "{{ item.ip }}    {{ item.name }}"
         state: present
       loop: "{{ k8s_hosts }}"
-      
+
+    - name: Disable swap
+      ansible.builtin.command: swapoff -a
+      when: ansible_swaptotal_mb > 0
+
+    - name: Comment out swap entries in /etc/fstab
+      ansible.builtin.replace:
+        path: /etc/fstab
+        regexp: '^([^#].*\s+swap\s+.*)$'
+        replace: '# \1'
+      when: ansible_swaptotal_mb > 0
