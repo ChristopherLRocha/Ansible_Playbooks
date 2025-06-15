@@ -1,0 +1,12 @@
+---
+- name: Add Kubernetes nodes to /etc/hosts
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Add entries to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item.ip }}    {{ item.name }}"
+        state: present
+      loop: "{{ k8s_hosts }}"

@@ -33,6 +33,7 @@
           - clamav
           - clamav-daemon
           - clamav-freshclam
+          - curl
         state: present
 
     - name: Ensure cron service is running
