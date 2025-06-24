@@ -3,20 +3,6 @@
   hosts: all
   become: yes
 
-  pre_tasks:
-    - name: Check if the setup has already been completed (using shell)
-      shell: test -f /etc/system_prep_complete && echo exists || echo missing
-      register: prep_marker
-      changed_when: false
-
-    - name: Debug marker file check result
-      debug:
-        var: prep_marker.stdout_lines[0]
-
-    - name: Skip host if setup is already completed
-      meta: end_play
-      when: prep_marker.stdout_lines[0] == "exists"
-
   tasks:
     - name: Update apt cache
       apt:
@@ -79,11 +65,6 @@
         hour: "3"
         weekday: "0"
         job: "systemctl stop clamav-freshclam && freshclam && systemctl start clamav-freshclam && systemctl enable clamd@scan && systemctl start clamd@scan"
-
-    - name: Create marker file to indicate setup is complete
-      file:
-        path: /etc/system_prep_complete
-        state: touch
 
     - name: Echo success message
       debug:
