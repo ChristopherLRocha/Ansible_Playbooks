@@ -4,14 +4,19 @@
   become: yes
 
   pre_tasks:
-    - name: Check if the setup has already been completed
-      stat:
-        path: /etc/system_prep_complete
+    - name: Check if the setup has already been completed (using shell)
+      shell: |
+        if [ -f /etc/system_prep_complete ]; then echo "exists"; else echo "missing"; fi
       register: prep_marker
+      changed_when: false
+
+    - name: Debug marker file check result
+      debug:
+        msg: "Prep marker file is {{ prep_marker.stdout }}"
 
     - name: Skip host if setup is already completed
       meta: end_play
-      when: prep_marker.stat.exists
+      when: prep_marker.stdout == "exists"
 
   tasks:
     - name: Update apt cache
