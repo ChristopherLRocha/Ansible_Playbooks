@@ -1,5 +1,5 @@
 ---
-- name: Set up fresh Ubuntu
+- name: Set Up Fresh Ubuntu
   hosts: all
   become: yes
 
