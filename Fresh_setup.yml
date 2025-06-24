@@ -11,11 +11,11 @@
 
     - name: Debug marker file check result
       debug:
-        var: prep_marker.stdout
+        var: prep_marker.stdout_lines[0]
 
     - name: Skip host if setup is already completed
       meta: end_play
-      when: prep_marker.stdout | trim == "exists"
+      when: prep_marker.stdout_lines[0] == "exists"
 
   tasks:
     - name: Update apt cache
